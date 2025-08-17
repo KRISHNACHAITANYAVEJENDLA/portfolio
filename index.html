@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My Projects</title>
+  <style>
+    :root { --bg:#fafafa; --card:#fff; --text:#111827; --muted:#6b7280; --border:#e5e7eb; --shadow:0 6px 18px rgba(0,0,0,.06) }
+    *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,"Noto Sans";
+    background:linear-gradient(#f6f7fb,var(--bg));color:var(--text)}
+    .container{max-width:960px;margin:0 auto;padding:32px 16px 80px}
+    h1{margin:0 0 8px;font-size:32px}.lead{margin:0 0 20px;color:var(--muted)}
+    .grid{display:grid;gap:14px;margin-top:22px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow)}
+    .card-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;cursor:pointer;border-radius:16px}
+    .title{font-weight:700;font-size:18px}
+    .pill{font-size:12px;padding:4px 10px;border:1px solid var(--border);color:#374151;background:#f9fafb;border-radius:999px}
+    .details{padding:0 18px 18px;display:none}.details.open{display:block}
+    .actions{display:flex;gap:10px;align-items:center;margin:10px 0 12px;flex-wrap:wrap}
+    .button{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;font-size:14px;border-radius:12px;background:#fff;
+      border:1px solid var(--border);text-decoration:none;color:#111827;box-shadow:var(--shadow)}
+    .button[aria-disabled="true"]{opacity:.5;pointer-events:none}
+    .carousel{position:relative}
+    .frame{width:100%;height:320px;overflow:hidden;border-radius:14px;border:1px solid var(--border);background:#fff;
+      display:flex;align-items:center;justify-content:center}
+    .frame img{width:100%;height:100%;object-fit:cover}
+    .empty{color:var(--muted);font-size:14px;padding:10px;text-align:center}
+    .nav{position:absolute;top:50%;transform:translateY(-50%);display:flex;align-items:center}
+    .prev{left:10px}.next{right:10px}
+    .nav button{background:rgba(255,255,255,.95);border:1px solid var(--border);width:38px;height:38px;border-radius:999px;
+      display:grid;place-items:center;cursor:pointer;box-shadow:var(--shadow)}
+    .dots{display:flex;gap:8px;justify-content:center;margin-top:10px}
+    .dot{width:10px;height:10px;border-radius:999px;border:1px solid var(--border);background:#e5e7eb;cursor:pointer}
+    .dot.active{background:#111827;border-color:#111827}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>My Projects</h1>
+    <p class="lead">Tap a project name to see its website and image slideshow.</p>
+    <div id="list" class="grid"></div>
+    <footer class="lead" style="font-size:12px">Single HTML file — no installs needed.</footer>
+  </div>
+
+  <!-- Project data -->
+  <script>
+    window.PROJECTS = [
+      {
+        id: "ecart",
+        title: "E-cart (Electronics Store)",
+        websiteUrl: "https://your-ecart-site.example.com",
+        images: [
+          "https://drive.google.com/file/d/1-Q8Br9gIMLLR585axlYUyy6gcHEfv5Wu/view?usp=sharing",
+          "https://drive.google.com/file/d/12xMxcjxDm46aJcN1CUwkHnrvyOrtEgHD/view?usp=sharing",
+          "https://drive.google.com/file/d/1NT-OxEnAq18gFC_2xUcJvzYLUp6ti7WZ/view?usp=sharing",
+          "https://drive.google.com/file/d/14NAa_7IVgwKAywYznLm5pHZ5dnbT-bg9/view?usp=sharing"
+        ]
+      },
+      { id:"note-gen", title:"AI Note Generator (Streamlit + Whisper)", websiteUrl:"", images:[] },
+      { id:"yt-transcriber", title:"YouTube Transcriber (Faster Whisper)", websiteUrl:"", images:[] }
+    ];
+  </script>
+
+  <!-- App logic with Drive fallback -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var PROJECTS = window.PROJECTS || [];
+      var listEl = document.getElementById('list');
+
+      // --- Google Drive helpers ---
+      function extractDriveId(url){
+        if(!url) return null;
+        var m1 = url.match(/[?&]id=([^&]+)/);                  // ...id=FILE_ID
+        if(m1) return m1[1];
+        var m2 = url.match(/\/file\/d\/([^/]+)\//);            // /file/d/FILE_ID/
+        if(m2) return m2[1];
+        return null;
+      }
+      function driveViewUrl(id){ return "https://drive.google.com/uc?export=view&id=" + id; }
+      function driveThumbUrl(id){ return "https://drive.google.com/thumbnail?id=" + id + "&sz=w1600"; }
+
+      function makeImgWithFallback(srcList, altText){
+        var img = document.createElement('img');
+        img.alt = altText || "";
+        img.loading = "lazy";
+        img.referrerPolicy = "no-referrer";
+        var i = 0;
+        function tryNext(){
+          if(i >= srcList.length){
+            img.removeAttribute('src');
+            img.dataset.error = "true";
+            return;
+          }
+          img.src = srcList[i++];
+        }
+        img.onerror = tryNext;
+        tryNext();
+        return img;
+      }
+
+      function normalizeSources(raw){
+        // If it's a Drive link, return [uc-view, thumbnail] fallbacks; else just [raw]
+        var id = extractDriveId(raw);
+        if(id) return [driveViewUrl(id), driveThumbUrl(id)];
+        return [raw];
+      }
+
+      function createProjectCard(project) {
+        var card = document.createElement('div'); card.className = 'card';
+        var head = document.createElement('div'); head.className = 'card-head';
+        head.setAttribute('role','button'); head.setAttribute('tabindex','0'); head.setAttribute('aria-expanded','false');
+
+        var title = document.createElement('div'); title.className = 'title'; title.textContent = project.title;
+        var pill = document.createElement('span'); pill.className = 'pill'; pill.textContent = 'tap to view';
+        head.appendChild(title); head.appendChild(pill);
+
+        var details = document.createElement('div'); details.className = 'details';
+
+        var actions = document.createElement('div'); actions.className = 'actions';
+        var websiteBtn = document.createElement('a'); websiteBtn.className = 'button'; websiteBtn.innerHTML = '🔗 Visit Website';
+        if (project.websiteUrl) { websiteBtn.href = project.websiteUrl; websiteBtn.target = '_blank'; websiteBtn.rel = 'noreferrer'; }
+        else { websiteBtn.setAttribute('aria-disabled','true'); websiteBtn.title = 'Add websiteUrl in PROJECTS to enable'; }
+
+        var count = document.createElement('span'); count.className = 'pill';
+        var imgCount = (project.images && project.images.length) ? project.images.length : 0;
+        count.textContent = imgCount + ' image(s)';
+        actions.appendChild(websiteBtn); actions.appendChild(count);
+
+        var carousel = document.createElement('div'); carousel.className = 'carousel';
+        var frame = document.createElement('div'); frame.className = 'frame';
+        var dots = document.createElement('div'); dots.className = 'dots';
+        var index = 0;
+
+        function renderImage(){
+          frame.innerHTML = '';
+          if (!project.images || project.images.length === 0) {
+            var empty = document.createElement('div'); empty.className = 'empty';
+            empty.textContent = 'No images yet.';
+            frame.appendChild(empty); dots.innerHTML = ''; return;
+          }
+
+          var sources = normalizeSources(project.images[index]);
+          var img = makeImgWithFallback(sources, project.title + ' image ' + (index+1));
+          frame.appendChild(img);
+
+          dots.innerHTML = '';
+          for (var i=0;i<project.images.length;i++){
+            (function(iLocal){
+              var dot = document.createElement('button');
+              dot.className = 'dot' + (iLocal===index ? ' active' : '');
+              dot.setAttribute('aria-label','Go to slide ' + (iLocal+1));
+              dot.addEventListener('click', function(){ index = iLocal; renderImage(); });
+              dots.appendChild(dot);
+            })(i);
+          }
+        }
+
+        var prevWrap = document.createElement('div'); prevWrap.className = 'nav prev';
+        var nextWrap = document.createElement('div'); nextWrap.className = 'nav next';
+        var prevBtn = document.createElement('button'); prevBtn.textContent = '◀';
+        var nextBtn = document.createElement('button'); nextBtn.textContent = '▶';
+        prevBtn.addEventListener('click', function(){ if (!project.images || !project.images.length) return;
+          index = (index - 1 + project.images.length) % project.images.length; renderImage(); });
+        nextBtn.addEventListener('click', function(){ if (!project.images || !project.images.length) return;
+          index = (index + 1) % project.images.length; renderImage(); });
+        prevWrap.appendChild(prevBtn); nextWrap.appendChild(nextBtn);
+
+        carousel.appendChild(frame); carousel.appendChild(prevWrap); carousel.appendChild(nextWrap);
+        details.appendChild(actions); details.appendChild(carousel); details.appendChild(dots);
+
+        function toggle(){
+          var open = details.classList.contains('open');
+          if (open){ details.classList.remove('open'); head.setAttribute('aria-expanded','false'); pill.textContent='tap to view'; }
+          else { details.classList.add('open'); head.setAttribute('aria-expanded','true'); pill.textContent='tap to hide'; index=0; renderImage(); }
+        }
+        head.addEventListener('click', toggle);
+        head.addEventListener('keydown', function(e){ if (e.key==='Enter'||e.key===' ') { e.preventDefault(); toggle(); } });
+
+        card.appendChild(head); card.appendChild(details);
+        return card;
+      }
+
+      function renderList(){
+        listEl.innerHTML = '';
+        for (var i=0;i<PROJECTS.length;i++){ listEl.appendChild(createProjectCard(PROJECTS[i])); }
+      }
+      var listEl = document.getElementById('list');
+      renderList();
+    });
+  </script>
+</body>
+</html>
