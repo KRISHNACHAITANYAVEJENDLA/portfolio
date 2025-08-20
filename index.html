@@ -5,107 +5,68 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>My Projects</title>
   <style>
-    :root{
-      --text:#e5e7eb;
-      --muted:#a7b0bd;
-    }
+    :root{ --text:#e5e7eb; --muted:#a7b0bd; }
     *{box-sizing:border-box}
     body{
-      margin:0;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,"Noto Sans";
-      color:var(--text);
-      background:#000;        /* your space canvas sits behind */
-      overflow-x:hidden;
-      min-height:100vh;
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,"Noto Sans";
+      color:var(--text); background:#000; overflow-x:hidden; min-height:100vh;
     }
-
-    /* ===== Space background (stars + subtle vortex) ===== */
     .space-bg{position:fixed; inset:0; z-index:0; overflow:hidden;
       background:
         radial-gradient(1200px 800px at 50% 50%, rgba(255,255,255,.06) 0%, rgba(255,255,255,0) 35%),
         radial-gradient(closest-corner at 50% 50%, #000 0%, #02030a 45%, #020414 70%, #000 100%);
     }
     #stars{position:absolute; inset:0; width:100%; height:100%}
-    .vortex{
-      position:absolute; inset:-25%; border-radius:50%;
-      background:repeating-conic-gradient(from 0deg,
-        rgba(255,255,255,.05) 0 14deg, rgba(0,0,0,0) 14deg 28deg);
-      filter:blur(60px); opacity:.25; animation:spin 80s linear infinite;
-    }
+    .vortex{position:absolute; inset:-25%; border-radius:50%;
+      background:repeating-conic-gradient(from 0deg, rgba(255,255,255,.05) 0 14deg, rgba(0,0,0,0) 14deg 28deg);
+      filter:blur(60px); opacity:.25; animation:spin 80s linear infinite;}
     @keyframes spin{to{transform:rotate(360deg)}}
-
-    /* ===== Content ===== */
     .container{position:relative; z-index:1; max-width:1200px; margin:40px auto; padding:0 14px}
     h1{margin:0 0 8px; font-size:32px; text-shadow:0 2px 10px rgba(0,0,0,.5)}
+    h2{margin:28px 0 8px; font-size:22px; text-shadow:0 2px 10px rgba(0,0,0,.5)}
     .lead{margin:0 0 16px; color:var(--muted); text-shadow:0 2px 10px rgba(0,0,0,.5)}
-
-    /* ===== “Cards” but fully transparent ===== */
-    .card{
-      background:transparent;      /* fully transparent */
-      border:none;                 /* no border */
-      box-shadow:none;             /* no shadow */
-      color:var(--text);
-      margin:0 0 14px;
-    }
-    .card-head{
-      display:flex; align-items:center; justify-content:space-between;
-      padding:14px 0; cursor:pointer; user-select:none;
-      border-bottom:1px dashed rgba(255,255,255,.15); /* thin guide line, remove if you want 100% clean */
-    }
+    .card{background:transparent; border:none; box-shadow:none; color:var(--text); margin:0 0 14px;}
+    .card-head{display:flex; align-items:center; justify-content:space-between;
+      padding:14px 0; cursor:pointer; user-select:none; border-bottom:1px dashed rgba(255,255,255,.15);}
     .title{font-weight:700; font-size:18px; text-shadow:0 2px 8px rgba(0,0,0,.6)}
-    .pill{
-      font-size:12px; padding:4px 10px;
-      border:1px dashed rgba(255,255,255,.25);
-      color:var(--text); background:transparent; border-radius:999px;
-    }
-    .details{display:none}
-    .details.open{display:block}
-
+    .pill{font-size:12px; padding:4px 10px; border:1px dashed rgba(255,255,255,.25);
+      color:var(--text); background:transparent; border-radius:999px;}
+    .details{display:none} .details.open{display:block}
     .actions{display:flex; gap:10px; align-items:center; margin:10px 0 14px; flex-wrap:wrap}
-    .button{
-      display:inline-flex; align-items:center; gap:8px; padding:10px 14px; font-size:14px; border-radius:12px;
-      color:var(--text); background:transparent; border:1px dashed rgba(255,255,255,.25);
-      text-decoration:none;
-    }
+    .button{display:inline-flex; align-items:center; gap:8px; padding:10px 14px; font-size:14px; border-radius:12px;
+      color:var(--text); background:transparent; border:1px dashed rgba(255,255,255,.25); text-decoration:none;}
     .button[aria-disabled="true"]{opacity:.5; pointer-events:none}
-
-    /* Slideshow frame: fully transparent + screen-fit */
-    .frame{
-      width:100%;
-      height:calc(100vh - 230px);   /* fills screen minus header text */
-      min-height:320px;
-      background:transparent;       /* fully transparent */
-      display:flex; align-items:center; justify-content:center;
-    }
-    .frame img{
-      width:100%; height:100%;
-      object-fit:contain;           /* fit to screen, no cropping */
-      background:transparent;
-    }
+    .frame{width:100%; height:calc(100vh - 230px); min-height:320px; background:transparent;
+      display:flex; align-items:center; justify-content:center;}
+    .frame img{width:100%; height:100%; object-fit:contain; background:transparent;}
     .empty{color:#c9d2df; font-size:14px; text-align:center; padding:20px; text-shadow:0 2px 8px rgba(0,0,0,.6)}
   </style>
 </head>
 <body>
-  <!-- Space background -->
-  <div class="space-bg">
-    <canvas id="stars"></canvas>
-    <div class="vortex"></div>
-  </div>
+  <div class="space-bg"><canvas id="stars"></canvas><div class="vortex"></div></div>
 
-  <!-- Content -->
+  <!-- Projects -->
   <div class="container">
     <h1>My Projects</h1>
     <p class="lead">Click a project name to reveal its full-screen-fit slideshow (no controls).</p>
     <div id="list"></div>
   </div>
 
-  <!-- ===== Your project data ===== -->
+  <!-- Certifications -->
+  <div class="container">
+    <h2>Certifications</h2>
+    <p class="lead">Click to reveal proof. These links are pulled directly from your resume.</p>
+    <div id="cert-list"></div>
+  </div>
+
+  <!-- Data pulled from your resume -->
   <script>
+    /* ---------- Projects ---------- */
     window.PROJECTS = [
       {
         id: "ecart",
         title: "E-cart (Electronics Store)",
-        websiteUrl: "https://your-ecart-site.example.com",
+        websiteUrl: "https://e-cart-nm6h.onrender.com", // from resume
         images: [
           "https://drive.google.com/file/d/1-Q8Br9gIMLLR585axlYUyy6gcHEfv5Wu/view?usp=sharing",
           "https://drive.google.com/file/d/12xMxcjxDm46aJcN1CUwkHnrvyOrtEgHD/view?usp=sharing",
@@ -116,17 +77,17 @@
       {
         id:"disease-prediction",
         title:"Disease Prediction With Symptoms",
-        websiteUrl:"https://krishnachaitanyavejendla.github.io/disease-prediction/",
+        websiteUrl:"https://krishnachaitanyavejendla.github.io/disease-prediction/", // from resume
         images:[
           "https://drive.google.com/file/d/1V8DWL5gdW4uYqmbGPAbHizbji7BBHL-V/view?usp=sharing",
-          "https://drive.google.com/file/d/1b8DVS1rJxolsdLrwm38ucH87va8nPB5y/view?usp=sharing",
+          "https://drive.google.com/file/d/1b8DVS1rJxolsdLrJwm38ucH87va8nPB5y/view?usp=sharing",
           "https://drive.google.com/file/d/1hgPsUiaVRxTWKVA_rGsI6EiL4RbNO1VM/view?usp=sharing"
         ]
       },
       {
         id:"notes-generator",
         title:"Automated Notes Generator",
-        websiteUrl:"https://automated-notes-generator.onrender.com/",
+        websiteUrl:"https://note-gen-npk.streamlit.app/", // from resume
         images:[
           "https://drive.google.com/file/d/1BoEe7Fd_S9NvC3NLlq4oEyXhWZpq_L3X/view?usp=sharing",
           "https://drive.google.com/file/d/1phfziG67undXbV_yILlpE4f34BfZwPYd/view?usp=sharing",
@@ -134,123 +95,164 @@
         ]
       }
     ];
+
+    /* ---------- Certifications ---------- */
+    // proofUrl values mapped in the same order your certs appear on the resume.
+    // Swap any URLs if you prefer different pairings.
+    window.CERTS = [
+      {
+        id: "azure-ai-eng",
+        title: "Microsoft Certified: Azure AI Engineer Associate",
+        issuer: "Microsoft",
+        proofUrl: "https://drive.google.com/file/d/1vjiY6lwq7KBejQs12cRf-q2urldZ9_aC/view?usp=drive_link"
+      },
+      {
+        id: "azure-ai-fund",
+        title: "Microsoft Certified: Azure AI Fundamentals",
+        issuer: "Microsoft",
+        proofUrl: "https://drive.google.com/file/d/13nMgDbB0bVM8NrrQcJFvK7qm4qF6kDSo/view?usp=drive_link"
+      },
+      {
+        id: "aws-arch",
+        title: "AWS Academy Cloud Architecting",
+        issuer: "AWS Academy",
+        proofUrl: "https://drive.google.com/file/d/1cW_nVd-6caf22lkUUjuJXRAmQpoH7OmI/view?usp=drive_link"
+      },
+      {
+        id: "aws-found",
+        title: "AWS Academy Cloud Foundations",
+        issuer: "AWS Academy",
+        proofUrl: "https://drive.google.com/file/d/1y3TYtE3g9pj7MyLch5LziVI6ccpIvFYL/view?usp=drive_link"
+      },
+      {
+        id: "pcap",
+        title: "PCAP: Programming Essentials in Python",
+        issuer: "Cisco Networking Academy",
+        proofUrl: "https://drive.google.com/file/d/1Fzv0ADcif-FkIVCi1A9hPZA8R7UTthEL/view?usp=drive_link"
+      },
+      {
+        id: "net-essentials",
+        title: "Networking Essentials",
+        issuer: "Cisco Networking Academy",
+        proofUrl: "https://drive.google.com/file/d/1wDloUkeko9ra1VK-fL4ZgNepduLMQUmh/view?usp=drive_link"
+      }
+      // Extra resume link (e.g., conference/publication certificate), if you want to show it too:
+      // { id:"adsss-2024", title:"ADSSS-2024 Conference Certificate", issuer:"ADSSS-2024", proofUrl:"https://drive.google.com/file/d/1anXGOmlKUAffbG8FljmDQhMLWh0u_YYm/view?usp=sharing" }
+    ];
   </script>
 
-  <!-- ===== App (no buttons; renders images only after click) ===== -->
+  <!-- App -->
   <script>
     /* ---- Starfield ---- */
     (function(){
-      var c = document.getElementById('stars'), ctx = c.getContext('2d');
-      function size(){ c.width = innerWidth; c.height = innerHeight; }
+      var c=document.getElementById('stars'),ctx=c.getContext('2d');
+      function size(){ c.width=innerWidth; c.height=innerHeight; }
       size(); addEventListener('resize', size);
-      var N = 220, stars=[];
-      for(var i=0;i<N;i++){
-        stars.push({x:Math.random()*c.width, y:Math.random()*c.height, r:Math.random()*1.2+0.2, s:Math.random()*0.4+0.05, a:Math.random()*1});
-      }
+      var N=220, stars=[];
+      for(var i=0;i<N;i++){ stars.push({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*1.2+0.2,s:Math.random()*0.4+0.05,a:Math.random()*1}); }
       function tick(){
         ctx.clearRect(0,0,c.width,c.height);
         for(var i=0;i<N;i++){
-          var s=stars[i]; s.y += s.s; if(s.y>c.height){ s.y=0; s.x=Math.random()*c.width; }
-          s.a += 0.02; var alpha = 0.5 + 0.5*Math.sin(s.a);
-          ctx.fillStyle = "rgba(255,255,255,"+alpha+")";
-          ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2); ctx.fill();
+          var s=stars[i]; s.y+=s.s; if(s.y>c.height){ s.y=0; s.x=Math.random()*c.width; }
+          s.a+=0.02; var alpha=0.5+0.5*Math.sin(s.a);
+          ctx.fillStyle="rgba(255,255,255,"+alpha+")"; ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2); ctx.fill();
         }
         requestAnimationFrame(tick);
-      }
-      tick();
+      } tick();
     })();
 
-    /* ---- Portfolio ---- */
-    document.addEventListener('DOMContentLoaded', function () {
-      var PROJECTS = window.PROJECTS || [];
-      var listEl = document.getElementById('list');
+    /* ---- Drive helpers ---- */
+    function extractDriveId(url){
+      if(!url) return null;
+      var m1=url.match(/[?&]id=([^&]+)/); if(m1) return m1[1];
+      var m2=url.match(/\/file\/d\/([^/]+)\//); if(m2) return m2[1];
+      return null;
+    }
+    function driveViewUrl(id){ return "https://drive.google.com/uc?export=view&id="+id; }
+    function driveThumbUrl(id){ return "https://drive.google.com/thumbnail?id="+id+"&sz=w1600"; }
+    function normalizeSources(raw){ var id=extractDriveId(raw); return id ? [driveViewUrl(id), driveThumbUrl(id)] : [raw]; }
+    function makeImgWithFallback(srcList, altText){
+      var img=document.createElement('img'); img.alt=altText||""; img.loading="lazy"; img.referrerPolicy="no-referrer";
+      var i=0; function next(){ if(i>=srcList.length){ img.removeAttribute('src'); return; } img.src=srcList[i++]; }
+      img.onerror=next; next(); return img;
+    }
 
-      // Google Drive helpers
-      function extractDriveId(url){
-        if(!url) return null;
-        var m1 = url.match(/[?&]id=([^&]+)/); if(m1) return m1[1];
-        var m2 = url.match(/\/file\/d\/([^/]+)\//); if(m2) return m2[1];
-        return null;
+    /* ---- Builders ---- */
+    function createProjectCard(project){
+      var card=document.createElement('div'); card.className='card';
+      var head=document.createElement('div'); head.className='card-head'; head.setAttribute('role','button'); head.setAttribute('tabindex','0'); head.setAttribute('aria-expanded','false');
+      var title=document.createElement('div'); title.className='title'; title.textContent=project.title;
+      var pill=document.createElement('span'); pill.className='pill'; pill.textContent='click to view';
+      head.appendChild(title); head.appendChild(pill);
+
+      var details=document.createElement('div'); details.className='details';
+      var actions=document.createElement('div'); actions.className='actions';
+      var websiteBtn=document.createElement('a'); websiteBtn.className='button'; websiteBtn.innerHTML='🔗 Visit Website';
+      if(project.websiteUrl){ websiteBtn.href=project.websiteUrl; websiteBtn.target='_blank'; websiteBtn.rel='noreferrer noopener'; }
+      else { websiteBtn.setAttribute('aria-disabled','true'); websiteBtn.title='Add websiteUrl in PROJECTS to enable'; }
+      var count=document.createElement('span'); count.className='pill';
+      var imgCount=(project.images&&project.images.length)?project.images.length:0; count.textContent=imgCount+' image(s)';
+      actions.appendChild(websiteBtn); actions.appendChild(count);
+      var frame=document.createElement('div'); frame.className='frame';
+      details.appendChild(actions); details.appendChild(frame);
+
+      var idx=0,timer=null,AUTOPLAY=3000;
+      function render(){
+        frame.innerHTML='';
+        if(!project.images||project.images.length===0){ var empty=document.createElement('div'); empty.className='empty'; empty.textContent='No images yet.'; frame.appendChild(empty); return; }
+        var sources=normalizeSources(project.images[idx]); frame.appendChild(makeImgWithFallback(sources, project.title+' image '+(idx+1)));
       }
-      function driveViewUrl(id){ return "https://drive.google.com/uc?export=view&id=" + id; }
-      function driveThumbUrl(id){ return "https://drive.google.com/thumbnail?id=" + id + "&sz=w1600"; }
-      function normalizeSources(raw){ var id = extractDriveId(raw); return id ? [driveViewUrl(id), driveThumbUrl(id)] : [raw]; }
-      function makeImgWithFallback(srcList, altText){
-        var img = document.createElement('img');
-        img.alt = altText || ""; img.loading = "lazy"; img.referrerPolicy = "no-referrer";
-        var i = 0; function next(){ if(i>=srcList.length){ img.removeAttribute('src'); return; } img.src = srcList[i++]; }
-        img.onerror = next; next(); return img;
+      function start(){ if(timer||!project.images||project.images.length<2) return; timer=setInterval(function(){ idx=(idx+1)%project.images.length; render(); }, AUTOPLAY); }
+      function stop(){ if(timer){ clearInterval(timer); timer=null; } }
+      function toggle(){
+        var open=details.classList.contains('open');
+        if(open){ details.classList.remove('open'); head.setAttribute('aria-expanded','false'); pill.textContent='click to view'; stop(); frame.innerHTML=''; }
+        else { details.classList.add('open'); head.setAttribute('aria-expanded','true'); pill.textContent='click to hide'; idx=0; render(); start(); }
       }
+      head.addEventListener('click', toggle);
+      head.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(); } });
 
-      function createProjectCard(project){
-        var card = document.createElement('div'); card.className = 'card';
+      card.appendChild(head); card.appendChild(details); return card;
+    }
 
-        var head = document.createElement('div'); head.className = 'card-head';
-        head.setAttribute('role','button'); head.setAttribute('tabindex','0'); head.setAttribute('aria-expanded','false');
+    function createCertCard(cert){
+      var card=document.createElement('div'); card.className='card';
+      var head=document.createElement('div'); head.className='card-head'; head.setAttribute('role','button'); head.setAttribute('tabindex','0'); head.setAttribute('aria-expanded','false');
+      var title=document.createElement('div'); title.className='title'; title.textContent=cert.title;
+      var pill=document.createElement('span'); pill.className='pill'; pill.textContent=cert.issuer||'Certification';
+      head.appendChild(title); head.appendChild(pill);
 
-        var title = document.createElement('div'); title.className = 'title'; title.textContent = project.title;
-        var pill = document.createElement('span'); pill.className = 'pill'; pill.textContent = 'click to view';
-        head.appendChild(title); head.appendChild(pill);
+      var details=document.createElement('div'); details.className='details';
+      var actions=document.createElement('div'); actions.className='actions';
+      var proofBtn=document.createElement('a'); proofBtn.className='button'; proofBtn.innerHTML='📄 View proof';
+      if(cert.proofUrl){ proofBtn.href=cert.proofUrl; proofBtn.target='_blank'; proofBtn.rel='noreferrer noopener'; }
+      else { proofBtn.setAttribute('aria-disabled','true'); proofBtn.title='Add proofUrl in CERTS to enable'; }
+      var issuerTag=document.createElement('span'); issuerTag.className='pill'; issuerTag.textContent=(cert.issuer||'Issuer');
+      actions.appendChild(proofBtn); actions.appendChild(issuerTag);
 
-        var details = document.createElement('div'); details.className = 'details';
+      var frame=document.createElement('div'); frame.className='frame';
+      details.appendChild(actions); details.appendChild(frame);
 
-        // Actions row (transparent)
-        var actions = document.createElement('div'); actions.className = 'actions';
-        var websiteBtn = document.createElement('a'); websiteBtn.className = 'button'; websiteBtn.innerHTML = '🔗 Visit Website';
-        if (project.websiteUrl){ websiteBtn.href = project.websiteUrl; websiteBtn.target = '_blank'; websiteBtn.rel = 'noreferrer'; }
-        else { websiteBtn.setAttribute('aria-disabled','true'); websiteBtn.title = 'Add websiteUrl in PROJECTS to enable'; }
-        var count = document.createElement('span'); count.className = 'pill';
-        var imgCount = (project.images && project.images.length) ? project.images.length : 0;
-        count.textContent = imgCount + ' image(s)';
-        actions.appendChild(websiteBtn); actions.appendChild(count);
-
-        // Transparent slideshow frame
-        var frame = document.createElement('div'); frame.className = 'frame';
-
-        details.appendChild(actions);
-        details.appendChild(frame);
-
-        // Only render images AFTER user clicks open
-        var idx=0, timer=null, AUTOPLAY=3000;
-        function render(){
-          frame.innerHTML = '';
-          if(!project.images || project.images.length===0){
-            var empty = document.createElement('div'); empty.className = 'empty';
-            empty.textContent = 'No images yet.'; frame.appendChild(empty); return;
-          }
-          var sources = normalizeSources(project.images[idx]);
-          frame.appendChild(makeImgWithFallback(sources, project.title + ' image ' + (idx+1)));
-        }
-        function start(){ if(timer || !project.images || project.images.length<2) return;
-          timer = setInterval(function(){ idx=(idx+1)%project.images.length; render(); }, AUTOPLAY); }
-        function stop(){ if(timer){ clearInterval(timer); timer=null; } }
-
-        function toggle(){
-          var open = details.classList.contains('open');
-          if(open){
-            details.classList.remove('open');
-            head.setAttribute('aria-expanded','false');
-            pill.textContent='click to view';
-            stop();                 // stop slideshow when hidden
-            frame.innerHTML='';     // remove images when hidden
-          }else{
-            details.classList.add('open');
-            head.setAttribute('aria-expanded','true');
-            pill.textContent='click to hide';
-            idx=0; render(); start();
-          }
-        }
-        head.addEventListener('click', toggle);
-        head.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(); } });
-
-        card.appendChild(head); card.appendChild(details);
-        return card;
+      function renderProof(){
+        frame.innerHTML='';
+        if(!cert.proofUrl){ var empty=document.createElement('div'); empty.className='empty'; empty.textContent='No proof added yet.'; frame.appendChild(empty); return; }
+        var sources=normalizeSources(cert.proofUrl); frame.appendChild(makeImgWithFallback(sources, cert.title+' proof'));
       }
-
-      // Render (nothing is open by default)
-      for (var i=0;i<PROJECTS.length;i++){
-        listEl.appendChild(createProjectCard(PROJECTS[i]));
+      function toggle(){
+        var open=details.classList.contains('open');
+        if(open){ details.classList.remove('open'); head.setAttribute('aria-expanded','false'); pill.textContent=cert.issuer||'Certification'; frame.innerHTML=''; }
+        else { details.classList.add('open'); head.setAttribute('aria-expanded','true'); pill.textContent='click to hide'; renderProof(); }
       }
+      head.addEventListener('click', toggle);
+      head.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(); } });
+
+      card.appendChild(head); card.appendChild(details); return card;
+    }
+
+    /* ---- Render ---- */
+    document.addEventListener('DOMContentLoaded', function(){
+      (window.PROJECTS||[]).forEach(p=>document.getElementById('list').appendChild(createProjectCard(p)));
+      (window.CERTS||[]).forEach(c=>document.getElementById('cert-list').appendChild(createCertCard(c)));
     });
   </script>
 </body>
